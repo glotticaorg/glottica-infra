@@ -1,11 +1,11 @@
-import { Construct } from 'constructs';
+import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as apigw from 'aws-cdk-lib/aws-apigateway';
-import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as route53Targets from 'aws-cdk-lib/aws-route53-targets';
-import * as acm from 'aws-cdk-lib/aws-certificatemanager';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
-import {WafConstruct} from "./waf-construct";
+import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
+import { Construct } from 'constructs';
+import { WafConstruct } from './waf-construct';
 
 interface ApiRoutingConstructProps {
   lambda: lambda.Function;
@@ -25,20 +25,20 @@ export class ApiRoutingConstruct extends Construct {
     });
 
     this.api = new apigw.RestApi(this, `MyApi-${id}`, {
-      restApiName: 'MyApi',
-      domainName: {
-        domainName: props.domainName,
-        certificate,
+      defaultCorsPreflightOptions: {
+        allowMethods: apigw.Cors.ALL_METHODS,
+        allowOrigins: apigw.Cors.ALL_ORIGINS,
       },
       deployOptions: {
-        stageName: 'prod',
-        metricsEnabled: true,
         loggingLevel: apigw.MethodLoggingLevel.INFO,
+        metricsEnabled: true,
+        stageName: 'prod',
       },
-      defaultCorsPreflightOptions: {
-        allowOrigins: apigw.Cors.ALL_ORIGINS,
-        allowMethods: apigw.Cors.ALL_METHODS,
+      domainName: {
+        certificate,
+        domainName: props.domainName,
       },
+      restApiName: 'MyApi',
     });
 
     const v1Api = this.api.root
@@ -63,9 +63,9 @@ export class ApiRoutingConstruct extends Construct {
     const processedDomainName = props.domainName.slice(0, sliceEnd);
 
     new route53.ARecord(this, `ApiARecord-${id}`, {
-      zone: props.hostedZone,
-      target: route53.RecordTarget.fromAlias(new route53Targets.ApiGateway(this.api)),
       recordName: processedDomainName,
+      target: route53.RecordTarget.fromAlias(new route53Targets.ApiGateway(this.api)),
+      zone: props.hostedZone,
     });
   }
 }

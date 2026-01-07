@@ -1,6 +1,6 @@
-import {Construct} from 'constructs';
-import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as cloudtrail from 'aws-cdk-lib/aws-cloudtrail';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import { Construct } from 'constructs';
 
 interface TrailConstructProps {
   putEvents: s3.IBucket[];
@@ -13,9 +13,9 @@ export class TrailConstruct extends Construct {
 
     const trail = new cloudtrail.Trail(this, 'DeploymentTrail', {
       bucket: props.trailBucket,
-      isMultiRegionTrail: true,
       enableFileValidation: true,
       includeGlobalServiceEvents: true,
+      isMultiRegionTrail: true,
       managementEvents: cloudtrail.ReadWriteType.ALL,
     });
 

@@ -1,7 +1,7 @@
+import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as cdk from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
-import {DnsConstruct} from "./dns-construct";
-import * as acm from "aws-cdk-lib/aws-certificatemanager";
+import { DnsConstruct } from './dns-construct';
 
 export class CloudfrontAcmStack extends cdk.Stack {
   public readonly arn: string

@@ -1,7 +1,8 @@
-import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as backup from 'aws-cdk-lib/aws-backup';
+import * as cdk from 'aws-cdk-lib';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import { Constants } from './constants';
+import { Construct } from 'constructs';
 
 export class TableConstruct extends Construct {
   public readonly table: dynamodb.Table;
@@ -10,23 +11,22 @@ export class TableConstruct extends Construct {
     super(scope, id);
 
     this.table = new dynamodb.Table(this, `Table-${id}`, {
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
       partitionKey: {
         name: 'type',
         type: dynamodb.AttributeType.STRING,
       },
+      pointInTimeRecoverySpecification: {
+        pointInTimeRecoveryEnabled: false,
+      },
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
       sortKey: {
         name: 'id',
         type: dynamodb.AttributeType.STRING,
       },
-      encryption: dynamodb.TableEncryption.AWS_MANAGED,
-      removalPolicy: cdk.RemovalPolicy.RETAIN,
-      pointInTimeRecoverySpecification: {
-        pointInTimeRecoveryEnabled: false,
-      },
     });
 
     const backupVault = new backup.BackupVault(this, `BackupVault-${id}`, {
-      encryptionKey: undefined,
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
 
@@ -35,11 +35,15 @@ export class TableConstruct extends Construct {
     });
 
     plan.addRule(new backup.BackupPlanRule({
-      ruleName: `MonthlySnapshot-${id}`,
-      scheduleExpression: cdk.aws_events.Schedule.cron({ day: '1', hour: '0', minute: '0' }), // 1st of month UTC
       backupVault,
-      moveToColdStorageAfter: cdk.Duration.days(30),
-      deleteAfter: cdk.Duration.days(365),
+      deleteAfter: cdk.Duration.days(Constants.year),
+      moveToColdStorageAfter: cdk.Duration.days(Constants.fourWeeks),
+      ruleName: `MonthlySnapshot-${id}`,
+      scheduleExpression: cdk.aws_events.Schedule.cron({
+        day: '1',
+        hour: '0',
+        minute: '0',
+      }),
     }));
 
     plan.addSelection(`BackupPlanSelection-${id}`, {

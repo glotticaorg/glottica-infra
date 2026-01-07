@@ -1,5 +1,5 @@
-import { Construct } from 'constructs';
 import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
+import { Construct } from 'constructs';
 
 interface WafConstructProps {
   scope: 'REGIONAL' | 'CLOUDFRONT';
@@ -12,25 +12,21 @@ export class WafConstruct extends Construct {
     super(scope, id);
 
     const waf = new wafv2.CfnWebACL(this, `ApiWAF-${id}`, {
-      defaultAction: { allow: {} },
-      scope: props.scope,
-      visibilityConfig: {
-        cloudWatchMetricsEnabled: true,
-        metricName: 'ApiWAF',
-        sampledRequestsEnabled: true,
+      defaultAction: {
+        allow: {},
       },
       rules: [
         {
           name: 'AWS-AWSManagedRulesCommonRuleSet',
+          overrideAction: {
+            none: {},
+          },
           priority: 0,
           statement: {
             managedRuleGroupStatement: {
-              vendorName: 'AWS',
               name: 'AWSManagedRulesCommonRuleSet',
+              vendorName: 'AWS',
             },
-          },
-          overrideAction: {
-            none: {},
           },
           visibilityConfig: {
             cloudWatchMetricsEnabled: true,
@@ -40,15 +36,15 @@ export class WafConstruct extends Construct {
         },
         {
           name: 'AWS-AWSManagedRulesKnownBadInputsRuleSet',
+          overrideAction: {
+            none: {},
+          },
           priority: 1,
           statement: {
             managedRuleGroupStatement: {
-              vendorName: 'AWS',
               name: 'AWSManagedRulesKnownBadInputsRuleSet',
+              vendorName: 'AWS',
             },
-          },
-          overrideAction: {
-            none: {},
           },
           visibilityConfig: {
             cloudWatchMetricsEnabled: true,
@@ -58,15 +54,15 @@ export class WafConstruct extends Construct {
         },
         {
           name: 'AWS-AWSManagedRulesIPReputationList',
+          overrideAction: {
+            none: {},
+          },
           priority: 2,
           statement: {
             managedRuleGroupStatement: {
-              vendorName: 'AWS',
               name: 'AWSManagedRulesIPReputationList',
+              vendorName: 'AWS',
             },
-          },
-          overrideAction: {
-            none: {},
           },
           visibilityConfig: {
             cloudWatchMetricsEnabled: true,
@@ -75,6 +71,12 @@ export class WafConstruct extends Construct {
           },
         },
       ],
+      scope: props.scope,
+      visibilityConfig: {
+        cloudWatchMetricsEnabled: true,
+        metricName: 'ApiWAF',
+        sampledRequestsEnabled: true,
+      },
     });
 
     this.arn = waf.attrArn;

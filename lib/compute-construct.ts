@@ -1,8 +1,8 @@
-import { Construct } from 'constructs';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as ssm from 'aws-cdk-lib/aws-ssm'
+import { Construct } from 'constructs';
 
 interface ComputeConstructProps {
   table: dynamodb.ITable;
@@ -21,15 +21,15 @@ export class ComputeConstruct extends Construct {
     );
 
     this.apiLambda = new lambda.Function(this, 'ApiLambda', {
-      runtime: lambda.Runtime.NODEJS_24_X,
       architecture: lambda.Architecture.ARM_64,
-      handler: 'index.handler',
-      code: lambda.Code.fromBucketV2(props.codeBucket, "apiLambdaCode/handler.zip", {
+      code: lambda.Code.fromBucketV2(props.codeBucket, 'apiLambdaCode/handler.zip', {
         objectVersion,
       }),
       environment: {
         TABLE_NAME: props.table.tableName,
       },
+      handler: 'index.handler',
+      runtime: lambda.Runtime.NODEJS_24_X,
     });
 
     props.table.grantReadWriteData(this.apiLambda);

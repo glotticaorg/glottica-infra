@@ -1,17 +1,17 @@
-// import * as cdk from 'aws-cdk-lib/core';
-// import { Template } from 'aws-cdk-lib/assertions';
-// import * as Infra from '../lib/infra-stack';
+// Import * as cdk from 'aws-cdk-lib/core';
+// Import { Template } from 'aws-cdk-lib/assertions';
+// Import * as Infra from '../lib/infra-stack';
 
-// example test. To run these tests, uncomment this file along with the
-// example resource in lib/glottica-stack.ts
+// Example test. To run these tests, uncomment this file along with the
+// Example resource in lib/glottica-stack.ts
 test('SQS Queue Created', () => {
-//   const app = new cdk.App();
+//   Const app = new cdk.App();
 //     // WHEN
-//   const stack = new Infra.GlotticaStack(app, 'MyTestStack');
+//   Const stack = new Infra.GlotticaStack(app, 'MyTestStack');
 //     // THEN
-//   const template = Template.fromStack(stack);
+//   Const template = Template.fromStack(stack);
 
-//   template.hasResourceProperties('AWS::SQS::Queue', {
+//   Template.hasResourceProperties('AWS::SQS::Queue', {
 //     VisibilityTimeout: 300
 //   });
 });
