@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib/core';
-import { CloudfrontAcmStack } from '../lib/cloudfront-acm-stack';
+import { CloudfrontStack } from '../lib/cloudfront-stack';
 import { GlotticaStack } from '../lib/glottica-stack';
 
 const app = new cdk.App();
 
-const certificateBaseRegion = 'us-east-1';
+const CERTIFICATE_BASE_REGION = 'us-east-1';
 
-new CloudfrontAcmStack(app, 'CloudfrontAcmStack', {
+new CloudfrontStack(app, 'CloudfrontAcmStack', {
   env: {
     account: process.env.AWS_ACCOUNT_ID,
-    region: certificateBaseRegion,
+    region: CERTIFICATE_BASE_REGION,
   },
 });
 

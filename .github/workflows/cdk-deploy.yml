@@ -8,6 +8,7 @@ env:
   AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
   AWS_REGION: ${{ vars.AWS_REGION }}
   GITHUB_REPOSITORY: ${{ github.repository }}
+  CDK_DISABLE_TELEMETRY: 1
 
 permissions:
   contents: read
@@ -15,7 +16,7 @@ permissions:
 
 jobs:
   deploy:
-    name: Deploy to AWS
+    name: Deploy infrastructure to AWS
     runs-on: ubuntu-latest
 
     steps:
@@ -43,7 +44,7 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: CDK Synth
-        run: npx cdk synth --verbose --verbose
+        run: npx cdk synth
 
       - name: CDK Deploy
         run: |

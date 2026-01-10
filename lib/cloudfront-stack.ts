@@ -5,7 +5,7 @@ import { ComplianceBucketConstruct } from './compliance-bucket-construct';
 import { Construct } from 'constructs';
 import { DnsConstruct } from './dns-construct';
 
-export class CloudfrontAcmStack extends cdk.Stack {
+export class CloudfrontStack extends cdk.Stack {
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
