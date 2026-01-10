@@ -25,10 +25,6 @@ export class ComplianceBucketConstruct extends Construct {
           expiration: retentionPeriod,
           transitions: [
             {
-              storageClass: s3.StorageClass.INFREQUENT_ACCESS,
-              transitionAfter: cdk.Duration.days(Constants.week),
-            },
-            {
               storageClass: s3.StorageClass.DEEP_ARCHIVE,
               transitionAfter: cdk.Duration.days(Constants.fourWeeks),
             },

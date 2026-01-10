@@ -27,7 +27,7 @@ export default defineConfig([
       'no-multi-spaces': 'error',
       'no-new': 'off',
       'no-ternary': 'off',
-      'no-undefined': 'warn',
+      'no-undefined': 'off',
       'no-unused-vars': ['error', {
         args: 'after-used',
         caughtErrors: 'none',

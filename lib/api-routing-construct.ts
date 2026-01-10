@@ -24,13 +24,14 @@ export class ApiRoutingConstruct extends Construct {
       validation: acm.CertificateValidation.fromDns(props.hostedZone),
     });
 
-    this.api = new apigw.RestApi(this, `MyApi-${id}`, {
+    this.api = new apigw.RestApi(this, `GlotticaApi-${id}`, {
       defaultCorsPreflightOptions: {
         allowMethods: apigw.Cors.ALL_METHODS,
         allowOrigins: apigw.Cors.ALL_ORIGINS,
       },
       deployOptions: {
-        loggingLevel: apigw.MethodLoggingLevel.INFO,
+        dataTraceEnabled: false,
+        loggingLevel: apigw.MethodLoggingLevel.OFF,
         metricsEnabled: true,
         stageName: 'prod',
       },
@@ -38,7 +39,7 @@ export class ApiRoutingConstruct extends Construct {
         certificate,
         domainName: props.domainName,
       },
-      restApiName: 'MyApi',
+      restApiName: 'GlotticaApi',
     });
 
     const v1Api = this.api.root
@@ -52,7 +53,7 @@ export class ApiRoutingConstruct extends Construct {
     });
 
     new wafv2.CfnWebACLAssociation(this, `ApiWafAssoc-${id}`, {
-      resourceArn: this.api.arnForExecuteApi(),
+      resourceArn: this.api.deploymentStage.stageArn,
       webAclArn: waf.arn,
     });
 
@@ -62,9 +63,17 @@ export class ApiRoutingConstruct extends Construct {
     const sliceEnd = Math.max(props.domainName.length - props.hostedZone.zoneName.length - 1, 0);
     const processedDomainName = props.domainName.slice(0, sliceEnd);
 
+    const apiGatewayRoutingAlias = new route53Targets.ApiGateway(this.api);
+
     new route53.ARecord(this, `ApiARecord-${id}`, {
       recordName: processedDomainName,
-      target: route53.RecordTarget.fromAlias(new route53Targets.ApiGateway(this.api)),
+      target: route53.RecordTarget.fromAlias(apiGatewayRoutingAlias),
+      zone: props.hostedZone,
+    });
+
+    new route53.AaaaRecord(this, `ApiAaaaRecord-${id}`, {
+      recordName: processedDomainName,
+      target: route53.RecordTarget.fromAlias(apiGatewayRoutingAlias),
       zone: props.hostedZone,
     });
   }

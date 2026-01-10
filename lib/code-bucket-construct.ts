@@ -15,7 +15,7 @@ export class CodeBucketConstruct extends Construct {
       encryption: s3.BucketEncryption.S3_MANAGED,
       lifecycleRules: [
         {
-          expiration: cdk.Duration.days(Constants.sevenYears),
+          expiration: cdk.Duration.days(Constants.year),
           transitions: [
             {
               storageClass: s3.StorageClass.GLACIER_INSTANT_RETRIEVAL,

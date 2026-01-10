@@ -5,7 +5,6 @@ import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as route53Targets from 'aws-cdk-lib/aws-route53-targets';
 import * as s3 from 'aws-cdk-lib/aws-s3';
-import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
 import { Construct } from 'constructs';
 import { WafConstruct } from './waf-construct';
 
@@ -40,10 +39,14 @@ export class CdnConstruct extends Construct {
       },
     });
 
+    const waf = new WafConstruct(this, 'CdnWaf', {
+      scope: 'CLOUDFRONT',
+    });
+
     this.distribution = new cloudfront.Distribution(this, 'WebsiteDistribution', {
       certificate: cert,
       defaultBehavior: {
-        origin: new origins.S3StaticWebsiteOrigin(this.bucket, {
+        origin: origins.S3BucketOrigin.withOriginAccessControl(this.bucket, {
           originAccessControlId: oac.originAccessControlId,
         }),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -61,15 +64,8 @@ export class CdnConstruct extends Construct {
         },
       ],
       logBucket: props.loggingBucket,
-    });
-
-    const waf = new WafConstruct(this, 'CdnWaf', {
-      scope: 'CLOUDFRONT',
-    });
-
-    new wafv2.CfnWebACLAssociation(this, 'CFWafAssoc', {
-      resourceArn: this.distribution.distributionArn,
-      webAclArn: waf.arn,
+      priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
+      webAclId: waf.arn,
     });
 
     if (!props.domainName.endsWith(props.hostedZone.zoneName)) {
@@ -78,9 +74,17 @@ export class CdnConstruct extends Construct {
     const sliceEnd = Math.max(props.domainName.length - props.hostedZone.zoneName.length - 1, 0);
     const processedDomainName = props.domainName.slice(0, sliceEnd);
 
+    const cloudfrontRoutingAlias = new route53Targets.CloudFrontTarget(this.distribution);
+
     new route53.ARecord(this, 'WebsiteARecord', {
       recordName: processedDomainName,
-      target: route53.RecordTarget.fromAlias(new route53Targets.CloudFrontTarget(this.distribution)),
+      target: route53.RecordTarget.fromAlias(cloudfrontRoutingAlias),
+      zone: props.hostedZone,
+    });
+
+    new route53.AaaaRecord(this, 'WebsiteAaaaRecord', {
+      recordName: processedDomainName,
+      target: route53.RecordTarget.fromAlias(cloudfrontRoutingAlias),
       zone: props.hostedZone,
     });
   }

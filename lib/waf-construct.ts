@@ -11,7 +11,7 @@ export class WafConstruct extends Construct {
   constructor(scope: Construct, id: string, props: WafConstructProps) {
     super(scope, id);
 
-    const waf = new wafv2.CfnWebACL(this, `ApiWAF-${id}`, {
+    const waf = new wafv2.CfnWebACL(this, `Waf-${id}`, {
       defaultAction: {
         allow: {},
       },
@@ -31,7 +31,7 @@ export class WafConstruct extends Construct {
           visibilityConfig: {
             cloudWatchMetricsEnabled: true,
             metricName: 'CommonRuleSet',
-            sampledRequestsEnabled: true,
+            sampledRequestsEnabled: false,
           },
         },
         {
@@ -49,7 +49,7 @@ export class WafConstruct extends Construct {
           visibilityConfig: {
             cloudWatchMetricsEnabled: true,
             metricName: 'KnownBadInputs',
-            sampledRequestsEnabled: true,
+            sampledRequestsEnabled: false,
           },
         },
         {
@@ -60,21 +60,21 @@ export class WafConstruct extends Construct {
           priority: 2,
           statement: {
             managedRuleGroupStatement: {
-              name: 'AWSManagedRulesIPReputationList',
+              name: 'AWSManagedRulesAmazonIpReputationList',
               vendorName: 'AWS',
             },
           },
           visibilityConfig: {
             cloudWatchMetricsEnabled: true,
-            metricName: 'IPReputation',
-            sampledRequestsEnabled: true,
+            metricName: 'IpReputationList',
+            sampledRequestsEnabled: false,
           },
         },
       ],
       scope: props.scope,
       visibilityConfig: {
         cloudWatchMetricsEnabled: true,
-        metricName: 'ApiWAF',
+        metricName: `Waf-${id}`,
         sampledRequestsEnabled: true,
       },
     });

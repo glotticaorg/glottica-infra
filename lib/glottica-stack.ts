@@ -1,6 +1,5 @@
 import * as cdk from 'aws-cdk-lib/core';
 import { ApiRoutingConstruct } from './api-routing-construct';
-import { CdnConstruct } from './cdn-construct';
 import { CodeBucketConstruct } from './code-bucket-construct';
 import { ComplianceBucketConstruct } from './compliance-bucket-construct';
 import { ComputeConstruct } from './compute-construct';
@@ -11,7 +10,6 @@ import { TableConstruct } from './table-construct';
 import { TrailConstruct } from './trail-construct';
 
 interface GlotticaStackProps extends cdk.StackProps {
-  cloudFrontCert: string,
   account: string,
   githubRepo: string,
 }
@@ -27,16 +25,12 @@ export class GlotticaStack extends cdk.Stack {
 
     const rootDomain = 'glottica.org';
     const apiDomain = 'api.glottica.org';
-    const dnsDomain = 'glottica.org';
 
     const dns = new DnsConstruct(this, 'DnsConstruct', {
       rootDomain,
     });
 
     const trailBucket = new ComplianceBucketConstruct(this, 'TrailBucketConstruct', {
-      sox: false,
-    });
-    const logging = new ComplianceBucketConstruct(this, 'LoggingConstruct', {
       sox: false,
     });
     const lambdaCode = new CodeBucketConstruct(this, 'CodeBucketConstruct');
@@ -57,13 +51,6 @@ export class GlotticaStack extends cdk.Stack {
       domainName: apiDomain,
       hostedZone: dns.zone,
       lambda: compute.apiLambda,
-    });
-
-    new CdnConstruct(this, 'CdnConstruct', {
-      certArn: props.cloudFrontCert,
-      domainName: dnsDomain,
-      hostedZone: dns.zone,
-      loggingBucket: logging.bucket,
     });
   }
 }

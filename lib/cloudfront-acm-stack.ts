@@ -1,10 +1,12 @@
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as cdk from 'aws-cdk-lib/core';
+import { CdnConstruct } from './cdn-construct';
+import { ComplianceBucketConstruct } from './compliance-bucket-construct';
 import { Construct } from 'constructs';
 import { DnsConstruct } from './dns-construct';
 
 export class CloudfrontAcmStack extends cdk.Stack {
-  public readonly arn: string
+
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -20,6 +22,15 @@ export class CloudfrontAcmStack extends cdk.Stack {
       validation: acm.CertificateValidation.fromDns(dns.zone),
     });
 
-    this.arn = cert.certificateArn;
+    const logging = new ComplianceBucketConstruct(this, 'LoggingConstruct', {
+      sox: false,
+    });
+
+    new CdnConstruct(this, 'CdnConstruct', {
+      certArn: cert.certificateArn,
+      domainName: cdnDomain,
+      hostedZone: dns.zone,
+      loggingBucket: logging.bucket,
+    });
   }
 }
