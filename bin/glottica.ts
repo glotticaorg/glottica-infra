@@ -20,5 +20,4 @@ new GlotticaStack(app, 'GlotticaStack', {
     account: process.env.AWS_ACCOUNT_ID,
     region: process.env.AWS_REGION,
   },
-  githubRepo: process.env.GITHUB_REPOSITORY!,
 });

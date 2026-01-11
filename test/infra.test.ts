@@ -10,7 +10,6 @@ test('Hosted Zone A & AAAA records created', () => {
       account: process.env.AWS_ACCOUNT_ID,
       region: process.env.AWS_REGION,
     },
-    githubRepo: 'torvalds/linux',
   });
   const template = Template.fromStack(stack);
   template.hasResourceProperties('AWS::Route53::RecordSet', {

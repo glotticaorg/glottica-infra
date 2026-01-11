@@ -11,7 +11,6 @@ import { TrailConstruct } from './trail-construct';
 
 interface GlotticaStackProps extends cdk.StackProps {
   account: string,
-  githubRepo: string,
 }
 
 export class GlotticaStack extends cdk.Stack {
@@ -20,7 +19,6 @@ export class GlotticaStack extends cdk.Stack {
 
     new GitHubIamConstruct(this, 'GitHubIamConstruct', {
       awsAccountId: props.account,
-      githubRepo: props.githubRepo,
     });
 
     const rootDomain = 'glottica.org';

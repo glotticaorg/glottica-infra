@@ -3,7 +3,6 @@ import { Construct } from 'constructs';
 
 interface GitHubIamConstructProps {
   awsAccountId: string;
-  githubRepo: string;
 }
 
 export class GitHubIamConstruct extends Construct {
@@ -22,7 +21,13 @@ export class GitHubIamConstruct extends Construct {
         {
           StringEquals: {
             'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
-            'token.actions.githubusercontent.com:sub': `repo:${props.githubRepo}:ref:refs/heads/master`,
+          },
+          StringLike: {
+            'token.actions.githubusercontent.com:sub': [
+              'repo:glotticaorg/glottica-backend:ref:refs/heads/master',
+              'repo:glotticaorg/glottica-frontend:ref:refs/heads/master',
+              'repo:glotticaorg/glottica-infra:ref:refs/heads/master',
+            ],
           },
         },
         'sts:AssumeRoleWithWebIdentity',

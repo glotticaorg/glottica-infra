@@ -7,7 +7,6 @@ on:
 env:
   AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
   AWS_REGION: ${{ vars.AWS_REGION }}
-  GITHUB_REPOSITORY: ${{ github.repository }}
   CDK_DISABLE_TELEMETRY: 1
 
 permissions:
