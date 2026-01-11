@@ -13,6 +13,10 @@ permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: 'deploy-infra'
+  cancel-in-progress: false
+
 jobs:
   deploy:
     name: Deploy infrastructure to AWS
