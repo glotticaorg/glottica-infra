@@ -15,7 +15,6 @@ new CloudfrontStack(app, 'CloudfrontAcmStack', {
 });
 
 new GlotticaStack(app, 'GlotticaStack', {
-  account: process.env.AWS_ACCOUNT_ID!,
   env: {
     account: process.env.AWS_ACCOUNT_ID,
     region: process.env.AWS_REGION,

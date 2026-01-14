@@ -9,16 +9,12 @@ import { GitHubIamConstruct } from './github-iam-construct';
 import { TableConstruct } from './table-construct';
 import { TrailConstruct } from './trail-construct';
 
-interface GlotticaStackProps extends cdk.StackProps {
-  account: string,
-}
-
 export class GlotticaStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props: GlotticaStackProps) {
+  constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props);
 
     new GitHubIamConstruct(this, 'GitHubIamConstruct', {
-      awsAccountId: props.account,
+      awsAccountId: props.env!.account!,
     });
 
     const rootDomain = 'glottica.org';

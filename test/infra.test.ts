@@ -5,7 +5,6 @@ import { Template } from 'aws-cdk-lib/assertions';
 test('Hosted Zone A & AAAA records created', () => {
   const app = new cdk.App();
   const stack = new glottica.GlotticaStack(app, 'MyTestStack', {
-    account: '123412341234',
     env: {
       account: '123412341234',
       region: 'eu-west-1',
