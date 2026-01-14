@@ -7,7 +7,6 @@ on:
     branches: [ master ]
 
 env:
-  AWS_REGION: ${{ vars.AWS_REGION }}
   CDK_DISABLE_TELEMETRY: 1
 
 permissions:

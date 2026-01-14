@@ -8,7 +8,7 @@ test('Hosted Zone A & AAAA records created', () => {
     account: '123412341234',
     env: {
       account: '123412341234',
-      region: process.env.AWS_REGION,
+      region: 'eu-west-1',
     },
   });
   const template = Template.fromStack(stack);
