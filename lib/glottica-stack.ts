@@ -18,7 +18,7 @@ export class GlotticaStack extends cdk.Stack {
     });
 
     const rootDomain = 'glottica.org';
-    const apiDomain = 'api.glottica.org';
+    const apiDomain = 'api.'.concat(rootDomain);
 
     const dns = new DnsConstruct(this, 'DnsConstruct', {
       rootDomain,
