@@ -15,10 +15,10 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "^25.3.0",
-    "aws-cdk": "2.1106.1",
+    "@types/node": "^25.3.3",
+    "aws-cdk": "2.1109.0",
     "eslint": "^10.0.2",
-    "globals": "^17.3.0",
+    "globals": "^17.4.0",
     "jest": "^30.2.0",
     "jiti": "^2.6.1",
     "ts-jest": "^29.2.5",
@@ -27,7 +27,7 @@
     "typescript-eslint": "^8.56.1"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.240.0",
+    "aws-cdk-lib": "2.241.0",
     "constructs": "^10.4.5"
   }
 }
